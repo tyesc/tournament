@@ -1,0 +1,60 @@
+{
+  "version": 2,
+  "projects": {
+    "tournament": {
+      "root": "apps/tournament",
+      "sourceRoot": "apps/tournament/src",
+      "projectType": "application",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/node:build",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/apps/tournament",
+            "main": "apps/tournament/src/main.ts",
+            "tsConfig": "apps/tournament/tsconfig.app.json",
+            "assets": ["apps/tournament/src/assets"]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/tournament/src/environments/environment.ts",
+                  "with": "apps/tournament/src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "executor": "@nrwl/node:execute",
+          "options": {
+            "buildTarget": "tournament:build"
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["apps/tournament/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/apps/tournament"],
+          "options": {
+            "jestConfig": "apps/tournament/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    }
+  },
+  "cli": {
+    "defaultCollection": "@nrwl/express"
+  },
+  "defaultProject": "tournament"
+}
