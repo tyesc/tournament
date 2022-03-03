@@ -1,4 +1,4 @@
-import { Tournament } from '../api/api-model';
+import { Participant, Tournament } from '../api/api-model';
 
 export class TournamentRepository {
   private tournaments = new Map<string, Tournament>();
@@ -11,11 +11,25 @@ export class TournamentRepository {
     return this.tournaments.get(tournamentId);
   }
 
-  public getTournamentByName(tournamentId: string): Tournament {
-    const touranment = [...this.tournaments.values()].find((item) => item.name === tournamentId);
+  public getTournamentByName(tournamentName: string): Tournament {
+    const tournament = [...this.tournaments.values()].find((item) => item.name === tournamentName);
 
-    return touranment;
+    return tournament;
   }
+
+  public addParticipant (tournamentId: string, participant: Participant): Tournament {
+    const tournament = this.tournaments.get(tournamentId);
+    console.log(tournament);
+
+
+    return tournament;
+  }
+
+  // public getParticipantByName(participantName: string): Participant {
+  //   const participant = [...this.tournaments.participants.values()].find((item) => item.name === participantName);
+
+  //   return participant;
+  // }
 
   public deleteTournament(tournamentId: string): void {
     this.tournaments.delete(tournamentId);
