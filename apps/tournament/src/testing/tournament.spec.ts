@@ -33,8 +33,22 @@ describe('/tournament endpoint', () => {
     });
 
     it('le nom est déjà pris', async () => {
-      await request(app).post('/api/tournaments').send(exampleTournament).expect(201);
+      const { body } = await request(app).post('/api/tournaments').send(exampleTournament).expect(201);
       await request(app).post('/api/tournaments').send(exampleTournament).expect(400);
+
+      await request(app).delete(`/api/tournaments/${body.id}`).expect(200);
     });
+
+    it('le tournoi n\'existe pas', async () => {
+      await request(app).get('/api/tournaments/123').expect(404);
+    });
+
+    it('le tournoi n\'existe pas', async () => {
+      await request(app).get('/api/tournaments/123').expect(404);
+    });
+
+    404 : le tournoi n'existe pas
+400 : le nom (chaine de caractères non vide) ou l'elo (nombre entier) sont incorrects
+400 : le participant existe déjà
   });
 });

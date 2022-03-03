@@ -31,6 +31,10 @@ export const getTournament = (req: Request, res: Response) => {
 
   const tournament = tournamentRepository.getTournament(id);
 
+  if(!tournament) {
+    throw new CustomError('Not found', 404, 'tournament not found');
+  }
+
   res.status(200);
   res.send(tournament);
 };
