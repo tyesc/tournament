@@ -11,8 +11,8 @@ export class TournamentRepository {
     return this.tournaments.get(tournamentId);
   }
 
-  public getTournamentByName(tournamentId: string): Tournament {
-    const touranment = [...this.tournaments.values()].find((item) => item.name === tournamentId);
+  public getTournamentByName(tournamentName: string): Tournament {
+    const touranment = [...this.tournaments.values()].find((item) => item.name === tournamentName);
 
     return touranment;
   }
