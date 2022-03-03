@@ -33,8 +33,10 @@ describe('/tournament endpoint', () => {
     });
 
     it('le nom est déjà pris', async () => {
-      await request(app).post('/api/tournaments').send(exampleTournament).expect(201);
+      const { body } = await request(app).post('/api/tournaments').send(exampleTournament).expect(201);
       await request(app).post('/api/tournaments').send(exampleTournament).expect(400);
+
+      await request(app).delete(`/api/tournaments/${body.id}`).expect(200);
     });
   });
 });
