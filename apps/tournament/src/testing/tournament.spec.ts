@@ -1,7 +1,6 @@
 import { app } from '../app';
 import * as request from 'supertest';
 import { Tournament, TournamentPhaseType } from '../app/api/api-model';
-import { TournamentRepository } from '../app/repository/tournament-repository';
 
 const exampleTournament = {
   name: 'Unreal',
@@ -10,8 +9,6 @@ const exampleTournament = {
 const exampleUnamedTournament = {
   name: '',
 } as Tournament;
-
-
 
 describe('/tournament endpoint', () => {
   describe('[POST] when creating a tournament', () => {
