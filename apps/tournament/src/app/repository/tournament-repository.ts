@@ -11,19 +11,14 @@ export class TournamentRepository {
     return this.tournaments.get(tournamentId);
   }
 
-  public tournamentNameExists(tournamentName: string): boolean {
-    let exists = [];
+  public getTournamentByName(tournamentId: string): Tournament {
+    const touranment = [...this.tournaments.values()].find((item) => item.name === tournamentId);
 
-    this.tournaments.forEach(item => {
-      if (item.name === tournamentName) {
-        exists.push('true')
-      }
-
-      exists.push('false')
-    });
-
-    if(exists.find((i) => i = 'true')) return true
-
-    return false
+    return touranment;
   }
+
+  public deleteTournament(tournamentId: string): void {
+    this.tournaments.delete(tournamentId);
+  }
+
 }

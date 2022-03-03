@@ -1,6 +1,7 @@
 import { app } from '../app';
 import * as request from 'supertest';
 import { Tournament, TournamentPhaseType } from '../app/api/api-model';
+import { TournamentRepository } from '../app/repository/tournament-repository';
 
 const exampleTournament = {
   name: 'Unreal',
@@ -18,6 +19,7 @@ describe('/tournament endpoint', () => {
       const { body } = await request(app).post('/api/tournaments').send(exampleTournament).expect(201);
 
       expect(body.id).not.toBeUndefined();
+      await request(app).delete(`/api/tournaments/${body.id}`).expect(200);
     });
 
     it('should have stored the tournament', async () => {
@@ -26,6 +28,7 @@ describe('/tournament endpoint', () => {
       const get = await request(app).get(`/api/tournaments/${body.id}`).expect(200);
 
       expect(get.body.name).toEqual(exampleTournament.name);
+      await request(app).delete(`/api/tournaments/${body.id}`).expect(200);
     });
 
     it('le champ nom est manquant ou vide', async () => {
@@ -33,6 +36,7 @@ describe('/tournament endpoint', () => {
     });
 
     it('le nom est déjà pris', async () => {
+      await request(app).post('/api/tournaments').send(exampleTournament).expect(201);
       await request(app).post('/api/tournaments').send(exampleTournament).expect(400);
     });
   });
