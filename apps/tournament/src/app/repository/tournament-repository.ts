@@ -10,4 +10,20 @@ export class TournamentRepository {
   public getTournament(tournamentId: string): Tournament {
     return this.tournaments.get(tournamentId);
   }
+
+  public tournamentNameExists(tournamentName: string): boolean {
+    let exists = [];
+
+    this.tournaments.forEach(item => {
+      if (item.name === tournamentName) {
+        exists.push('true')
+      }
+
+      exists.push('false')
+    });
+
+    if(exists.find((i) => i = 'true')) return true
+
+    return false
+  }
 }

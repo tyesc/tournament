@@ -8,6 +8,12 @@ const tournamentRepository = new TournamentRepository();
 export const postTournament = (req: Request, res: Response) => {
   const tournamentToAdd: TournamentToAdd = req.body;
 
+  const nameExists = tournamentRepository.tournamentNameExists(tournamentToAdd.name);
+console.log(nameExists)
+  // if (nameExists) {
+  //   res.status(400);
+  // }
+
   const tournament = { id: uuidv4(), name: tournamentToAdd.name, phases: [], participants: [] };
   tournamentRepository.saveTournament(tournament);
 
