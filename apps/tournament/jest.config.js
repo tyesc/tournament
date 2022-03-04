@@ -1,12 +1,11 @@
 module.exports = {
   displayName: 'tournament',
-  preset: '../../jest.preset.js',
+  preset: '@shelf/jest-mongodb',
   globals: {
     'ts-jest': {
       tsconfig: '<rootDir>/tsconfig.spec.json',
     },
   },
-  testEnvironment: 'node',
   transform: {
     '^.+\\.[tj]s$': 'ts-jest',
   },

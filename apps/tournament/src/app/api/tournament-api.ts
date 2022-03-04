@@ -13,9 +13,9 @@ export const postTournament = (req: Request, res: Response) => {
     throw new CustomError('Bad Request', 400, 'empty_name');
   }
 
-  const nameExists = tournamentRepository.getTournamentByName(tournamentToAdd.name);
+  const exists = tournamentRepository.getTournamentByName(tournamentToAdd.name);
 
-  if (nameExists) {
+  if (exists) {
     throw new CustomError('Bad Request', 400, 'name_already_used');
   }
 
@@ -48,7 +48,7 @@ export const deleteTournament = (req: Request, res: Response) => {
   res.send({ deleted: true });
 };
 
-export const postParticipants = (req: Request, res: Response) => {
+export const postParticipant = (req: Request, res: Response) => {
   const participantToAdd: Participant = req.body;
   const id = req.params['id'];
 
@@ -62,9 +62,9 @@ export const postParticipants = (req: Request, res: Response) => {
     throw new CustomError('Not Found', 404, 'tournament_not_found');
   }
 
-  const nameExists = tournamentRepository.getParticipantByName(tournament, participantToAdd.name);
+  const exists = tournamentRepository.getParticipantByName(tournament, participantToAdd.name);
 
-  if (nameExists) {
+  if (exists) {
     throw new CustomError('Bad Request', 400, 'name_already_used');
   }
 

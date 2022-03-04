@@ -9,3 +9,6 @@ export class CustomError {
     this.additionalInfo = additionalInfo
   }
 }
+
+export const BadRequest = (additionalInfo = 'bad_request',) =>
+  new CustomError('BadRequest', 400, additionalInfo);

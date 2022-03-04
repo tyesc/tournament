@@ -1,18 +1,23 @@
 import { app } from '../app';
-import * as request from 'supertest';
+import request from 'supertest';
 import { Participant, Tournament } from '../app/api/api-model';
 
-const exampleTournament = {
-  name: 'Unreal',
-} as Tournament;
-
-const exampleParticipant = {
-  name: 'Player 1',
-  elo: 123,
-} as Participant;
-
-
 describe('/tournament endpoint', () => {
+  let exampleTournament, exampleParticipant;
+
+  beforeEach(() => {
+
+    exampleTournament = {
+      name: 'Unreal',
+    } as Tournament;
+
+    exampleParticipant = {
+      name: 'Player 1',
+      elo: 123,
+    } as Participant;
+
+  });
+
   describe('[POST] && [GET] tournament', () => {
     it('should return the correct id', async () => {
       const { body } = await request(app).post('/api/tournaments').send(exampleTournament).expect(201);
@@ -34,8 +39,6 @@ describe('/tournament endpoint', () => {
       exampleTournament.name = '';
 
       await request(app).post('/api/tournaments').send(exampleTournament).expect(400);
-
-      exampleTournament.name = 'Unreal';
     });
 
     it('le nom est déjà pris', async () => {
@@ -82,8 +85,6 @@ describe('/tournament endpoint', () => {
       await request(app).post(`/api/tournaments/${tournament.body.id}/participants`).send(exampleParticipant).expect(400);
 
       await request(app).delete(`/api/tournaments/${tournament.body.id}`).expect(200);
-
-      exampleParticipant.name = 'Player 1';
     });
 
     it('l\'elo (nombre entier) est incorrect', async () => {
@@ -114,7 +115,6 @@ describe('/tournament endpoint', () => {
       expect(get.body.length).toEqual(2);
 
       await request(app).delete(`/api/tournaments/${tournament.body.id}`).expect(200);
-      exampleParticipant.name = 'Player 1';
     });
 
     it('le tournoi n\'existe pas', async () => {

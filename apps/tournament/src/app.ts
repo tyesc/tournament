@@ -1,13 +1,13 @@
-import * as express from 'express';
+import express from 'express';
 import {
   getTournament,
   postTournament,
   deleteTournament,
-  postParticipants,
+  postParticipant,
   getAllParticipants,
   deleteParticipant
 } from './app/api/tournament-api';
-import * as bodyParser from 'body-parser';
+import bodyParser from 'body-parser';
 
 export const app = express();
 app.use(bodyParser.json());
@@ -22,6 +22,6 @@ app.get('/api/tournaments/:id', getTournament);
 app.delete('/api/tournaments/:id', deleteTournament);
 
 // Participants
-app.post('/api/tournaments/:id/participants', postParticipants);
+app.post('/api/tournaments/:id/participants', postParticipant);
 app.get('/api/tournaments/:id/participants', getAllParticipants);
 app.delete('/api/tournaments/:id/participants/:participantId', deleteParticipant);
