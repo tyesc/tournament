@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { TournamentRepository } from '../repository/tournament-repository';
 import { CustomError } from '../../utils/errors';
-import { TournamentToAdd, Participant } from './api-model';
+import { TournamentToAdd, Participant, TournamentPhaseType, TournamentPhase } from './api-model';
 import { v4 as uuidv4 } from 'uuid';
 
 const tournamentRepository = new TournamentRepository();
@@ -48,6 +48,8 @@ export const deleteTournament = (req: Request, res: Response) => {
   res.send({ deleted: true });
 };
 
+
+// Participants
 export const postParticipants = (req: Request, res: Response) => {
   const participantToAdd: Participant = req.body;
   const id = req.params['id'];
@@ -101,6 +103,65 @@ export const deleteParticipant = (req: Request, res: Response) => {
   }
 
   tournamentRepository.deleteParticipant(tournament, participantId);
+
+  res.status(204);
+  res.send();
+};
+
+
+
+// Phases
+export const postPhases = (req: Request, res: Response) => {
+  const phaseToAdd: TournamentPhase = req.body;
+  const id = req.params['id'];
+
+  if (!phaseToAdd.type || !Object.values(TournamentPhaseType).includes(phaseToAdd.type)) {
+    throw new CustomError('Bad Request', 400);
+  }
+
+  const tournament = tournamentRepository.getTournament(id);
+
+  if (!tournament) {
+    throw new CustomError('Not Found', 404, 'tournament_not_found');
+  }
+
+  if (phaseToAdd.type != TournamentPhaseType.SingleBracketElimination || tournament.phases.length > 0 ) {
+    throw new CustomError('Bad Request', 400, 'wrong_phase_type');
+  }
+
+  const phase = { id: uuidv4(), type: phaseToAdd.type };
+  tournamentRepository.addPhase(tournament.id, phase);
+
+  res.status(201);
+  res.send({ id: phase.id });
+};
+
+export const getAllPhases = (req: Request, res: Response) => {
+  const id = req.params['id'];
+
+  const tournament = tournamentRepository.getTournament(id);
+
+  if(!tournament) {
+    throw new CustomError('Not found', 404, 'tournament not found');
+  }
+
+  const phases = tournamentRepository.getAllPhases(tournament);
+
+  res.status(200);
+  res.send(phases);
+};
+
+export const deletePhase = (req: Request, res: Response) => {
+  const id = req.params['id'];
+  const phaseId = req.params['phaseId'];
+
+  const tournament = tournamentRepository.getTournament(id);
+
+  if(!tournament) {
+    throw new CustomError('Not found', 404, 'tournament not found');
+  }
+
+  tournamentRepository.deletePhase(tournament, phaseId);
 
   res.status(204);
   res.send();

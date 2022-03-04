@@ -1,6 +1,6 @@
 import { app } from '../app';
 import * as request from 'supertest';
-import { Participant, Tournament } from '../app/api/api-model';
+import { Participant, Tournament, TournamentPhase } from '../app/api/api-model';
 
 const exampleTournament = {
   name: 'Unreal',
@@ -10,6 +10,10 @@ const exampleParticipant = {
   name: 'Player 1',
   elo: 123,
 } as Participant;
+
+const exampleTournamentPhase = {
+  type: 'SingleBracketElimination',
+} as TournamentPhase;
 
 
 describe('/tournament endpoint', () => {
@@ -50,7 +54,7 @@ describe('/tournament endpoint', () => {
     });
   });
 
-  describe('[POST] when creating a participants', () => {
+  describe('[POST] creating a participants', () => {
 
     it('le participant a été ajouté au tournois', async () => {
       const tournament = await request(app).post('/api/tournaments').send(exampleTournament).expect(201);
@@ -136,6 +140,32 @@ describe('/tournament endpoint', () => {
       const get = await request(app).get(`/api/tournaments/${tournament.body.id}/participants`).expect(200);
 
       expect(get.body.length).toEqual(1);
+
+      await request(app).delete(`/api/tournaments/${tournament.body.id}`).expect(200);
+    });
+  });
+
+  describe('[POST] tournament phases', () => {
+
+    it('la phase a été ajouté au tournois', async () => {
+      const tournament = await request(app).post('/api/tournaments').send(exampleTournament).expect(201);
+      const phase = await request(app).post(`/api/tournaments/${tournament.body.id}/phases`).send(exampleTournamentPhase).expect(201);
+
+      const get = await request(app).get(`/api/tournaments/${tournament.body.id}`).expect(200);
+
+      expect(get.body.phases[0].id).toBe(phase.body.id);
+
+      await request(app).delete(`/api/tournaments/${get.body.id}`).expect(200);
+    });
+
+    it('le tournoi n\'existe pas', async () => {
+      await request(app).post('/api/tournaments/123/phases').send(exampleTournamentPhase).expect(404);
+    });
+
+    it('le type n\'est pas fourni ou n\'est pas connu', async () => {
+      const tournament = await request(app).post('/api/tournaments').send(exampleTournament).expect(201);
+      await request(app).post(`/api/tournaments/${tournament.body.id}/phases`).send(exampleTournamentPhase).expect(201);
+      await request(app).post(`/api/tournaments/${tournament.body.id}/phases`).send(exampleTournamentPhase).expect(400);
 
       await request(app).delete(`/api/tournaments/${tournament.body.id}`).expect(200);
     });

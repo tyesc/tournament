@@ -5,7 +5,10 @@ import {
   deleteTournament,
   postParticipants,
   getAllParticipants,
-  deleteParticipant
+  deleteParticipant,
+  postPhases,
+  deletePhase,
+  getAllPhases
 } from './app/api/tournament-api';
 import * as bodyParser from 'body-parser';
 
@@ -25,3 +28,8 @@ app.delete('/api/tournaments/:id', deleteTournament);
 app.post('/api/tournaments/:id/participants', postParticipants);
 app.get('/api/tournaments/:id/participants', getAllParticipants);
 app.delete('/api/tournaments/:id/participants/:participantId', deleteParticipant);
+
+// Participants
+app.post('/api/tournaments/:id/phases', postPhases);
+app.get('/api/tournaments/:id/phases', getAllPhases);
+app.delete('/api/tournaments/:id/phases/:phaseId', deletePhase);

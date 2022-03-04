@@ -4,6 +4,7 @@ export enum TournamentPhaseType {
 }
 
 export interface TournamentPhase {
+  id: string;
   type: TournamentPhaseType;
 }
 
