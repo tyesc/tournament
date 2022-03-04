@@ -52,7 +52,7 @@ export const postParticipants = (req: Request, res: Response) => {
   const participantToAdd: Participant = req.body;
   const id = req.params['id'];
 
-  if (!participantToAdd.name || !participantToAdd.elo) {
+  if (!participantToAdd.name || !participantToAdd.elo || !Number.isInteger(participantToAdd.elo)) {
     throw new CustomError('Bad Request', 400);
   }
 

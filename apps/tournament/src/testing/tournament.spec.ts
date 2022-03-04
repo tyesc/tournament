@@ -6,24 +6,11 @@ const exampleTournament = {
   name: 'Unreal',
 } as Tournament;
 
-const exampleUnamedTournament = {
-  name: '',
-} as Tournament;
-
 const exampleParticipant = {
   name: 'Player 1',
   elo: 123,
 } as Participant;
 
-const exampleEmptyNameParticipant = {
-  name: '',
-  elo: 123,
-} as Participant;
-
-const exampleEmptyEloParticipant = {
-  name: 'Player 1',
-  elo: null,
-} as Participant;
 
 describe('/tournament endpoint', () => {
   describe('[POST] && [GET] tournament', () => {
@@ -44,7 +31,11 @@ describe('/tournament endpoint', () => {
     });
 
     it('le champ nom est manquant ou vide', async () => {
-      await request(app).post('/api/tournaments').send(exampleUnamedTournament).expect(400);
+      exampleTournament.name = '';
+
+      await request(app).post('/api/tournaments').send(exampleTournament).expect(400);
+
+      exampleTournament.name = 'Unreal';
     });
 
     it('le nom est déjà pris', async () => {
@@ -85,16 +76,26 @@ describe('/tournament endpoint', () => {
     });
 
     it('le nom (chaine de caractères vide) est incorrect', async () => {
+      exampleParticipant.name = '';
+
       const tournament = await request(app).post('/api/tournaments').send(exampleTournament).expect(201);
-      await request(app).post(`/api/tournaments/${tournament.body.id}/participants`).send(exampleEmptyNameParticipant).expect(400);
+      await request(app).post(`/api/tournaments/${tournament.body.id}/participants`).send(exampleParticipant).expect(400);
 
       await request(app).delete(`/api/tournaments/${tournament.body.id}`).expect(200);
+
+      exampleParticipant.name = 'Player 1';
     });
 
     it('l\'elo (nombre entier) est incorrect', async () => {
       const tournament = await request(app).post('/api/tournaments').send(exampleTournament).expect(201);
-      await request(app).post(`/api/tournaments/${tournament.body.id}/participants`).send(exampleEmptyEloParticipant).expect(400);
 
+      exampleParticipant.elo = null;
+      await request(app).post(`/api/tournaments/${tournament.body.id}/participants`).send(exampleParticipant).expect(400);
+
+      exampleParticipant.elo = 1.14;
+      await request(app).post(`/api/tournaments/${tournament.body.id}/participants`).send(exampleParticipant).expect(400);
+
+      exampleParticipant.elo = 123;
       await request(app).delete(`/api/tournaments/${tournament.body.id}`).expect(200);
     });
   });
@@ -104,7 +105,7 @@ describe('/tournament endpoint', () => {
     it('liste des participants au tournois', async () => {
       const tournament = await request(app).post('/api/tournaments').send(exampleTournament).expect(201);
       await request(app).post(`/api/tournaments/${tournament.body.id}/participants`).send(exampleParticipant).expect(201);
-      exampleParticipant.name = 'Palyer 2';
+      exampleParticipant.name = 'Player 2';
 
       await request(app).post(`/api/tournaments/${tournament.body.id}/participants`).send(exampleParticipant).expect(201);
 
@@ -113,7 +114,7 @@ describe('/tournament endpoint', () => {
       expect(get.body.length).toEqual(2);
 
       await request(app).delete(`/api/tournaments/${tournament.body.id}`).expect(200);
-      exampleParticipant.name = 'Palyer 1';
+      exampleParticipant.name = 'Player 1';
     });
 
     it('le tournoi n\'existe pas', async () => {
@@ -123,10 +124,10 @@ describe('/tournament endpoint', () => {
 
   describe('[DELETE] tournament participants', () => {
 
-    it('delete participant of a tourntament', async () => {
+    it('delete participant of a tournament', async () => {
       const tournament = await request(app).post('/api/tournaments').send(exampleTournament).expect(201);
       const participant = await request(app).post(`/api/tournaments/${tournament.body.id}/participants`).send(exampleParticipant).expect(201);
-      exampleParticipant.name = 'Palyer 2';
+      exampleParticipant.name = 'Player 2';
 
       await request(app).post(`/api/tournaments/${tournament.body.id}/participants`).send(exampleParticipant).expect(201);
 
