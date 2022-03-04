@@ -167,7 +167,32 @@ describe('/tournament endpoint', () => {
       await request(app).post(`/api/tournaments/${tournament.body.id}/phases`).send(exampleTournamentPhase).expect(201);
       await request(app).post(`/api/tournaments/${tournament.body.id}/phases`).send(exampleTournamentPhase).expect(400);
 
+      exampleTournamentPhase.type = null;
+      await request(app).post(`/api/tournaments/${tournament.body.id}/phases`).send(exampleTournamentPhase).expect(400);
+
       await request(app).delete(`/api/tournaments/${tournament.body.id}`).expect(200);
+      exampleTournamentPhase.type = 'SingleBracketElimination';
+    });
+  });
+
+  describe('[GET] tournament phases', () => {
+
+    it('liste des phases au tournois', async () => {
+      const tournament = await request(app).post('/api/tournaments').send(exampleTournament).expect(201);
+
+      exampleTournamentPhase.type = 'SwissRound';
+      await request(app).post(`/api/tournaments/${tournament.body.id}/phases`).send(exampleParticipant).expect(201);S
+      await request(app).post(`/api/tournaments/${tournament.body.id}/phases`).send(exampleParticipant).expect(201);
+
+      const get = await request(app).get(`/api/tournaments/${tournament.body.id}/phases`).expect(200);
+
+      expect(get.body.length).toEqual(2);
+
+      await request(app).delete(`/api/tournaments/${tournament.body.id}`).expect(200);
+    });
+
+    it('le tournoi n\'existe pas', async () => {
+      await request(app).get('/api/tournaments/123/participants').expect(404);
     });
   });
 });

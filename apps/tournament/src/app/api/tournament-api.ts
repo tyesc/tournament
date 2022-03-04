@@ -125,8 +125,8 @@ export const postPhases = (req: Request, res: Response) => {
     throw new CustomError('Not Found', 404, 'tournament_not_found');
   }
 
-  if (phaseToAdd.type != TournamentPhaseType.SingleBracketElimination || tournament.phases.length > 0 ) {
-    throw new CustomError('Bad Request', 400, 'wrong_phase_type');
+  if (phaseToAdd.type === TournamentPhaseType.SingleBracketElimination && tournament.phases.length > 0 ) {
+    throw new CustomError('Bad Request', 400, 'only_one_phase_allowed');
   }
 
   const phase = { id: uuidv4(), type: phaseToAdd.type };
