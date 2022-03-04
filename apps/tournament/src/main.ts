@@ -6,16 +6,16 @@
 import './config';
 
 import { app } from './app';
-import  { MongoDB } from './connectors';
+import  connectors from './connectors';
 
 const port = process.env.port || 3333;
 
-MongoDB(app);
+connectors.map(c => c(app));
 
 const server = app.listen(port, () => {
   console.log(`Listening at http://localhost:${port}/api`);
 });
 server.on('error', console.error);
 server.close(() => {
-  MongoDB.disconnect();
+  connectors.map(c => c?.disconnect?.())
 });

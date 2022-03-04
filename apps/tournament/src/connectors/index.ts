@@ -1,1 +1,5 @@
-export { default as MongoDB } from './MongoDB';
+import MongoDB from './MongoDB';
+
+export default [
+  MongoDB,
+];
