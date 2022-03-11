@@ -1,10 +1,10 @@
 
 
-# Tournament
+# [Tournament](https://github.com/fhemery/tournament-kata-starter)
 
 This project was generated using [Nx](https://nx.dev).
 
-## Setup 
+## Setup
 
 > npm i
 

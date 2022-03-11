@@ -7,6 +7,7 @@ declare let global: any;
 
 const MongoDB = async app => {
   mongoose.Promise = global.Promise;
+
   await mongoose.connect(environment.TEST ?  global.__MONGO_URI__ : environment.MONGODB_URI, {
     useNewUrlParser: true,
     useCreateIndex: true,

@@ -15,7 +15,8 @@ connectors.map(c => c(app));
 const server = app.listen(port, () => {
   console.log(`Listening at http://localhost:${port}/api`);
 });
+
 server.on('error', console.error);
-server.close(() => {
+server.on('close', () => {
   connectors.map(c => c?.disconnect?.())
 });

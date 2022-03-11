@@ -1,4 +1,13 @@
+const path = require('path');
+const dotenv = require('dotenv');
+
+dotenv.config({ path: path.resolve('../../.test.env') });
+
 module.exports = {
+  clearMocks: true,
+  collectCoverage: true,
+  timers: 'real',
+  coverageDirectory: 'coverage',
   displayName: 'tournament',
   preset: '@shelf/jest-mongodb',
   globals: {

@@ -1,13 +1,17 @@
 import express from 'express';
+import bodyParser from 'body-parser';
+
 import {
   getTournament,
   postTournament,
   deleteTournament,
+} from './app/controllers/tournament-controller';
+import {
   postParticipant,
   getAllParticipants,
   deleteParticipant
-} from './app/api/tournament-api';
-import bodyParser from 'body-parser';
+} from './app/controllers/participant-controller';
+import { catchError } from './utils/errors';
 
 export const app = express();
 app.use(bodyParser.json());
@@ -17,11 +21,11 @@ app.get('/api', (req, res) => {
   res.send({ message: 'Welcome to tournament!' });
 });
 
-app.post('/api/tournaments', postTournament);
-app.get('/api/tournaments/:id', getTournament);
-app.delete('/api/tournaments/:id', deleteTournament);
+app.post('/api/tournaments', catchError(postTournament));
+app.get('/api/tournaments/:id', catchError(getTournament));
+app.delete('/api/tournaments/:id', catchError(deleteTournament));
 
 // Participants
-app.post('/api/tournaments/:id/participants', postParticipant);
-app.get('/api/tournaments/:id/participants', getAllParticipants);
-app.delete('/api/tournaments/:id/participants/:participantId', deleteParticipant);
+app.post('/api/tournaments/:id/participants', catchError(postParticipant));
+app.get('/api/tournaments/:id/participants', catchError(getAllParticipants));
+app.delete('/api/tournaments/:id/participants/:participantId', catchError(deleteParticipant));
