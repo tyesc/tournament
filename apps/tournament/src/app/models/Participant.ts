@@ -4,6 +4,11 @@ import { ParticipantInterface } from './interfaces';
 
 const Participant = new mongoose.Schema<ParticipantInterface>({
 
+  id: {
+    type: String,
+    required: true,
+  },
+
   name: {
     type: String,
     required: true,

@@ -2,13 +2,18 @@ import {
   TournamentInterface,
   ParticipantInterface,
 } from '../models/interfaces';
-import { Tournament } from '../models';
+import { Tournament, Participant } from '../models';
 import { NotFound } from '../../utils/errors';
-
 
 export default class ParticipantRepository {
 
-  public async addParticipant (tournament: TournamentInterface, participant: ParticipantInterface): Promise<ParticipantInterface> {
+  public async createParticipant (participant: ParticipantInterface): Promise<ParticipantInterface> {
+    return await new Participant(participant).save();
+  }
+
+  public async addParticipant (tournament: any, participant: ParticipantInterface): Promise<ParticipantInterface> {
+    tournament.participants.push(participant);
+    await tournament.save();
 
     return participant;
   }
@@ -25,19 +30,17 @@ export default class ParticipantRepository {
     return participant;
   }
 
-  public async getAllParticipants(tournamentId: string): Promise<ParticipantInterface[]> {
-    return await Tournament.findOne({ id: tournamentId }).populate('participants').participants;
+  public async getAllParticipants(tournament: any): Promise<ParticipantInterface[]> {
+    const { participants } = await Tournament.findOne(tournament).populate('participants');
+
+    return participants;
   }
 
-  public async deleteParticipant(tournamentId: string, participantId: string): Promise<void> {
-    const tournament = await Tournament.findOne({ id: tournamentId });
-
-    if(!tournament) {
-      throw NotFound('tournament_not_found');
-    }
-
+  public async removeParticipant(tournamentId: string, participantId: string): Promise<TournamentInterface> {
+    const tournament = await Tournament.findOne({ id: tournamentId }).populate('participants');
     tournament.participants = tournament.participants.filter(item => item.id !== participantId);
-    await tournament.save();
+
+    return await tournament.save();
   }
 
 }
