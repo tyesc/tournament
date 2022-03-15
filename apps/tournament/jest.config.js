@@ -7,7 +7,6 @@ module.exports = {
   clearMocks: true,
   collectCoverage: true,
   timers: 'real',
-  coverageDirectory: 'coverage',
   displayName: 'tournament',
   preset: '@shelf/jest-mongodb',
   globals: {

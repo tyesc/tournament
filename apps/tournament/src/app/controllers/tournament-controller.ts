@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 
 import * as tournamentService from '../services/tournament';
 import { BadRequest } from '../../utils/errors';
+import { uuidV4Validate } from '../../utils/validate';
 import {
   TournamentToAdd,
 } from '../models/interfaces';
@@ -22,7 +23,7 @@ export const postTournament = async (req: Request, res: Response) => {
 export const getTournament = async (req: Request, res: Response) => {
   const id = req.params['id'];
 
-  if (!id) {
+  if (!uuidV4Validate(id)) {
     throw BadRequest('wrong_id');
   }
 
@@ -35,7 +36,7 @@ export const getTournament = async (req: Request, res: Response) => {
 export const deleteTournament = async (req: Request, res: Response) => {
   const id = req.params['id'];
 
-  if (!id) {
+  if (!uuidV4Validate(id)) {
     throw BadRequest('wrong_id');
   }
 

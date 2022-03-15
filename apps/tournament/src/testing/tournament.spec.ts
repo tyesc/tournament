@@ -1,26 +1,25 @@
+import { v4 as uuidv4 } from 'uuid';
+
 import { app } from '../app';
 import request from 'supertest';
-import { ParticipantInterface, TournamentInterface } from '../app/models/interfaces';
+import { TournamentInterface } from '../app/models/interfaces';
 import  connectors from '../connectors';
 
 describe('/tournament endpoint', () => {
-  let exampleTournament, exampleParticipant;
+  let exampleTournament, ctx;
 
   beforeAll(() => {
     connectors.map(c => c(app));
   })
 
   beforeEach(() => {
-
     exampleTournament = {
       name: 'Unreal',
     } as TournamentInterface;
 
-    exampleParticipant = {
-      name: 'Player 1',
-      elo: 123,
-    } as ParticipantInterface;
-
+    ctx = {
+      uuid: uuidv4(),
+    };
   });
 
   afterAll(() => {
@@ -57,8 +56,28 @@ describe('/tournament endpoint', () => {
       await request(app).delete(`/api/tournaments/${body.id}`).expect(200);
     });
 
+    it('should not have validate id', async () => {
+      await request(app).get('/api/tournaments/123').expect(400);
+    });
+
     it('should not found tournament', async () => {
-      await request(app).get('/api/tournaments/123').expect(404);
+      await request(app).get(`/api/tournaments/${ctx.uuid}`).expect(404);
+    });
+  });
+
+  describe('[DELETE] tournament', () => {
+    it('should remove tournament', async () => {
+      const { body } = await request(app).post('/api/tournaments').send(exampleTournament).expect(201);
+
+      await request(app).delete(`/api/tournaments/${body.id}`).expect(200);
+    });
+
+    it('should not found tournament', async () => {
+      await request(app).delete(`/api/tournaments/${ctx.uuid}`).expect(404);
+    });
+
+    it('should not have validate id', async () => {
+      await request(app).delete('/api/tournaments/123').expect(400);
     });
   });
 });

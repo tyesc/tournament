@@ -21,10 +21,6 @@ export default class ParticipantRepository {
   public async getParticipantByName(tournamentId: string, participantName: string): Promise<ParticipantInterface> {
     const tournament = await Tournament.findOne({ id: tournamentId }).populate('participants');
 
-    if(!tournament) {
-      throw NotFound('tournament_not_found');
-    }
-
     const participant = tournament.participants.find(p => p.name === participantName);
 
     return participant;

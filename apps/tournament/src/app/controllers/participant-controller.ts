@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 
 import * as participantService from '../services/participant';
 import { BadRequest } from '../../utils/errors';
+import { uuidV4Validate } from '../../utils/validate';
 import {
   ParticipantInterface,
 } from '../models/interfaces';
@@ -15,7 +16,7 @@ export const postParticipant = async (req: Request, res: Response) => {
     throw BadRequest('wrong_name');
   }
 
-  if (!id) {
+  if (!uuidV4Validate(id)) {
     throw BadRequest('wrong_id');
   }
 
@@ -28,7 +29,7 @@ export const postParticipant = async (req: Request, res: Response) => {
 export const getAllParticipants = async (req: Request, res: Response) => {
   const id = req.params['id'];
 
-  if (!id) {
+  if (!uuidV4Validate(id)) {
     throw BadRequest('wrong_id');
   }
 
@@ -42,7 +43,7 @@ export const deleteParticipant = async (req: Request, res: Response) => {
   const id = req.params['id'];
   const participantId = req.params['participantId'];
 
-  if (!id || !participantId) {
+  if (!uuidV4Validate(id) || !uuidV4Validate(participantId)) {
     throw BadRequest('wrong_id');
   }
 
